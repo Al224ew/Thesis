@@ -1,11 +1,11 @@
 import React from 'react'
-import fakeData from '../fakeData/nodeLinks'
+import dataHandler from '../Data/dataHandler'
 import Graph from './src/Graph'
 export default class Index extends React.Component {
   constructor (props) {
     super(props)
     this.d3Ref = React.createRef()
-    this.data = fakeData.data
+    this.data = dataHandler.data
     this.state = { height: window.innerHeight, width: window.innerWidth }
   }
 
