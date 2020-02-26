@@ -15,7 +15,6 @@ const SelectionDataHandler = {
   },
 
   setCurrentSelection () {
-    if (this.currentSelection.nodes.length < 1) { return }
     this.stateFunc(this.currentSelection.nodes)
   },
 
@@ -36,7 +35,13 @@ const SelectionDataHandler = {
 
   pushSelection (type, item) {
     if (item === null) return
-    this.currentSelection[type].push(item)
+    if (Array.isArray(item)) {
+      item.forEach(currentItem => {
+        this.currentSelection[type][currentItem.data()[0].index] = currentItem
+      })
+    } else {
+      this.currentSelection[type][item.data()[0].index] = item
+    }
     this.setCurrentSelection()
   },
 
@@ -45,8 +50,15 @@ const SelectionDataHandler = {
     if (!this.isCurrentSelectionEmpty()) {
       this.previousSelection.push(Object.assign({}, this.currentSelection))
     }
-    this.currentSelection.nodes = type === 'nodes' ? (Array.isArray(item) ? item : [item]) : []
-    this.currentSelection.edges = type === 'edges' ? (Array.isArray(item) ? item : [item]) : []
+    this.currentSelection.nodes = []
+    this.currentSelection.edges = []
+    if (Array.isArray(item)) {
+      item.forEach(currentItem => {
+        this.currentSelection[type][currentItem.data()[0].index] = currentItem
+      })
+    } else {
+      this.currentSelection[type][item.data()[0].index] = item
+    }
     this.setCurrentSelection()
   },
   isCurrentSelectionEmpty () {

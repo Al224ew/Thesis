@@ -4,10 +4,11 @@ const EntityStyler = {
      * @param {*} entity - Node or edge that should be highlighted.
      */
   hightLight (type, entity) {
+    if (entity.length < 1) { return }
     if (type === 'nodes') {
       entity
-        .attr('r', 30)
-        .style('fill', '#69b3a2')
+        //
+        .style('fill', 'yellow')
         .style('opacity', 1)
         .style('stroke-width', '2')
     } else if (type === 'edges') {
@@ -22,6 +23,7 @@ const EntityStyler = {
        * @param {*} entity - Node or edge that should be normalized.
        */
   normalize (type, entity) {
+    if (entity.length < 1) { return }
     if (type === 'nodes') {
       entity
         .attr('r', 20)

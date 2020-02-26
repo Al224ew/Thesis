@@ -24,6 +24,7 @@ const AreaSelection = {
 
     KeyEvents.addFunctionToKeyPress(28, () => {
       document.body.style.cursor = 'crosshair'
+      this.selectedPoints = []
       StateHandler.stateChange('mousemove', 'areaSelection')
       StateHandler.stateChange('mouseup', 'areaSelection')
     })
@@ -55,8 +56,21 @@ const AreaSelection = {
       cordinates.maxX = isNaN(cordinates.maxX) ? point.x : (cordinates.maxX < point.x) ? point.x : cordinates.maxX
     })
     // Here we controll all nodes to see if they are withtin, we then push them to a seperate table.
+    const nodesWithin = this.getEntitysWithinMaxMin('nodes', cordinates)
+
+    const selectedNodes = this.getEntitysToSelect(nodesWithin)
+
+    this.resetPastSelection()
+
+    const nodes = this.selectMultiEntitys('nodes', selectedNodes)
+    const edges = this.selectMultiEntitys('edges', selectedNodes)
+
+    SelectionDataHandler.newSelection('nodes', nodes)
+    SelectionDataHandler.pushSelection('edges', edges)
+  },
+  getEntitysWithinMaxMin (type, cordinates) {
     const entitysWithinSelection = []
-    DataHandler.data.nodes.forEach(entity => {
+    DataHandler.data[type].forEach(entity => {
       let withIn = true
       if (entity.x < cordinates.minX || entity.x > cordinates.maxX) {
         withIn = false
@@ -68,6 +82,9 @@ const AreaSelection = {
         entitysWithinSelection.push(entity)
       }
     })
+    return entitysWithinSelection
+  },
+  getEntitysToSelect (entitysWithinSelection) {
     const selectedEntitys = []
     entitysWithinSelection.forEach(entity => {
       const x = []
@@ -80,31 +97,43 @@ const AreaSelection = {
       })
       x.sort((a, b) => a - b)
       if (entity.x >= x[0] && entity.x < x[x.length - 1]) {
-        selectedEntitys.push(entity.id)
+        selectedEntitys.push(entity.index)
       }
     })
-    this.selectMultiNodes(selectedEntitys)
+    return selectedEntitys
   },
-
-  selectMultiNodes (ids) {
-    console.log('multi')
+  resetPastSelection () {
+    SelectionDataHandler.currentSelection.nodes.forEach(node => {
+      EntityStyler.normalize('nodes', node)
+    })
+    SelectionDataHandler.currentSelection.edges.forEach(edge => {
+      console.log(edge)
+      EntityStyler.normalize('edges', edge)
+    })
+  },
+  selectMultiEntitys (type, ids) {
     if (typeof ids === 'undefined') return
-    let first = true
-    d3.selectAll('circle')
+    const selection = []
+    d3.selectAll(type === 'nodes' ? 'circle' : 'line')
       .filter(function (d) {
         ids.forEach(id => {
-          if (id === d.id) {
-            if (first) {
-              SelectionDataHandler.newSelection(d3.select(this))
-
-              first = false
-            } else {
-              SelectionDataHandler.pushSelection(d3.select(this))
-            }
-            EntityStyler.hightLight(d3.select(this))
+          switch (type) {
+            case 'nodes' :
+              if (id === d.index) {
+                selection.push(d3.select(this))
+                EntityStyler.hightLight(type, d3.select(this))
+              }
+              break
+            case 'edges':
+              if (id === d.target.index || id === d.source.index) {
+                selection.push(d3.select(this))
+                EntityStyler.hightLight(type, d3.select(this))
+              }
+              break
           }
         })
       })
+    return selection
   }
 }
 

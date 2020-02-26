@@ -9,7 +9,6 @@ const MiscTasks = {
   },
 
   findAdjacents () {
-    console.log('finding adjacents')
     const nodes = []
     d3.selectAll('line')
       .filter(function (link) {
@@ -58,7 +57,6 @@ const MiscTasks = {
       }
       return false
     })
-    console.log(newSelection)
   }
 
 }

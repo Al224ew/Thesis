@@ -57,7 +57,7 @@ export default class Graph {
       .attr('font-family', 'sans-serif')
       .attr('fill', 'red')
       .text(function (d) {
-        return 'ID' + d.id
+        return d.id
       })
 
     // Put as seperate data, do same with links. Easy selection by id
