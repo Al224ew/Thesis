@@ -1,4 +1,6 @@
 import * as d3 from 'd3'
+import Tasks from './Tasks'
+import DataHandler from '../../Data/DataHandler'
 /**
      * Class for SVG
      * @param {*} ref - Reference to where the Graph Container should be appended
@@ -7,43 +9,59 @@ import * as d3 from 'd3'
      * @param {*} height - Height of the Graph container. By default 100vh
 */
 export default class Graph {
-  constructor (ref, data1, width = '100vw', height = '100vh') {
-    this.data = data1
+  constructor (ref, width = '100vw', height = '100vh') {
     this.ref = ref
     this.width = width
     this.height = height
-    this.data = data1
   }
 
   /**
    * Generates a graph with the given data.
    */
   generate () {
+    this.points = '0,0 '
+    this.state = 0
+    this.start = ''
+    this.pointsa = []
     var svg = d3.select(this.ref)
       .append('svg')
       .attr('width', '100vw')
       .attr('height', '100vh')
-    // zoom and panning added from below.
-      .call(d3.zoom().on('zoom', function () {
-        svg.attr('transform', d3.event.transform)
-      }))
+      .style('border', '2px')
       .append('g')
     // Initialize the links
     this.link = svg
       .selectAll('line')
-      .data(this.data.links)
+      .data(DataHandler.data.links)
       .enter()
       .append('line')
       .style('stroke', '#aaa')
-
+      .style('stroke-width', '2')
     // Initialize the nodes
     this.node = svg
       .selectAll('circle')
-      .data(this.data.nodes)
+      .data(DataHandler.data.nodes)
       .enter()
       .append('circle')
       .attr('r', 20) // --
       .style('fill', '#69b3a2')
+      .style('stroke', '#000')
+      .style('opacity', 0.8)
+      .style('stroke-width', '0')
+
+    this.text = svg.selectAll('text')
+      .data(DataHandler.data.nodes)
+      .enter()
+      .append('text')
+      .attr('font-size', '20px')
+      .attr('font-family', 'sans-serif')
+      .attr('fill', 'red')
+      .text(function (d) {
+        return 'ID' + d.id
+      })
+
+    // Put as seperate data, do same with links. Easy selection by id
+    this.tasks = new Tasks(this.node, this.link, this.ref, svg)
   }
 
   /**
@@ -62,13 +80,17 @@ export default class Graph {
       this.node
         .attr('cx', function (d) { return d.x })
         .attr('cy', function (d) { return d.y })
+
+      this.text
+        .attr('x', function (d) { return d.x })
+        .attr('y', function (d) { return d.y })
     }
 
     // This part handles all the force
-    d3.forceSimulation(this.data.nodes)
+    d3.forceSimulation(DataHandler.data.nodes)
       .force('link', d3.forceLink() // This force provides links between nodes
         .id(function (d) { return d.id }) // This provide  the id of a node
-        .links(this.data.links) // and this the list of links
+        .links(DataHandler.data.links) // and this the list of links
       )
       .force('charge', d3.forceManyBody().strength(-500)) // Basically wants the nodes to get away from eachother.
       .force('center', d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2)) // Make the node come to the center

@@ -1,24 +1,22 @@
-const dataHandler = {
+const DataHandler = {
   data: {
   },
-  generate: function (nodes) {
-    const data = { nodes: [], links: [] }
-    console.log(nodes)
+  generate (nodes) {
+    const data = { nodes: [], links: [], adjaceny: [] }
     for (let i = 0; i <= nodes; i++) {
-      data.nodes.push({ id: i })
+      data.nodes.push({ id: i, age: (i + 1) })
     }
     for (let i = 0; i <= nodes; i++) {
       data.links.push({ source: i, target: Math.round(Math.random() * nodes) })
     }
-    dataHandler.data = data
-    console.log(JSON.stringify(data))
+    this.data = data
   },
   /**
    * Will return a promise upon completion of extracting data from given file and setting it the the graphs data.
    * Accepts JSON.
    * @param {*} file - The file which should be parsed.
    */
-  dataFromFile: function (file) {
+  dataFromFile (file) {
     return new Promise((resolve, reject) => {
       try {
         switch (file.type) {
@@ -26,7 +24,7 @@ const dataHandler = {
             file.text()
               .then(data => JSON.parse(data))
               .then(parsedData => {
-                resolve(dataHandler.data = parsedData)
+                resolve(this.data = parsedData)
               })
             break
 
@@ -39,4 +37,4 @@ const dataHandler = {
     })
   }
 }
-export default dataHandler
+export default DataHandler

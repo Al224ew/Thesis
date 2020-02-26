@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
-import dataHandler from '../Data/dataHandler'
+import DataHandler from '../Data/DataHandler'
 import Spinner from 'react-bootstrap/Spinner'
 /**
  * A basic card which is used to specifiy the amount of nodes for the newly generated network.
@@ -27,11 +27,11 @@ export default function MainCard (props) {
   const generateGraph = () => {
     setLoading(true)
     if (file != null) {
-      dataHandler.dataFromFile(file).then(() => props.state(true))
+      DataHandler.dataFromFile(file).then(() => props.state(true))
         .catch(err => handleError(err))
     } else {
       if (nodes > 0) {
-        dataHandler.generate(nodes)
+        DataHandler.generate(nodes)
         props.state(true)
       } else {
         handleError('Cannot start with 0 nodes')
@@ -43,7 +43,7 @@ export default function MainCard (props) {
     setError(err)
     setLoading(false)
   }
-  
+
   return (
     <Card style={{ height: '60vh', width: '18rem', marginLeft: 'auto', marginRight: 'auto', top: '20vh' }}>
       <Card.Img variant='top' src='https://datavizproject.com/wp-content/uploads/2016/06/DVP_101_200-35.png' />
