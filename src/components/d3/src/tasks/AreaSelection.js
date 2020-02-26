@@ -3,6 +3,7 @@ import StateHandler from './helper/StateHandler'
 import EntityStyler from './helper/EntityStyler'
 import DataHandler from '../../../Data/DataHandler'
 import SelectionDataHandler from '../Util/SelectionDataHandler'
+import KeyEvents from './helper/KeyEvents'
 const AreaSelection = {
   selectedPoints: [],
   pointsString: '',
@@ -20,8 +21,12 @@ const AreaSelection = {
       .attr('points', '0,0')
       .style('fill', 'blue')
       .style('opacity', '0.2')
-    StateHandler.stateChange('mousemove', 'areaSelection')
-    StateHandler.stateChange('mouseup', 'areaSelection')
+
+    KeyEvents.addFunctionToKeyPress(28, () => {
+      document.body.style.cursor = 'crosshair'
+      StateHandler.stateChange('mousemove', 'areaSelection')
+      StateHandler.stateChange('mouseup', 'areaSelection')
+    })
   },
 
   selecting (d3Event) {
@@ -33,6 +38,7 @@ const AreaSelection = {
   },
 
   doneSelecting (d3Event) {
+    document.body.style.cursor = 'default'
     this.pointsString = ''
     EntityStyler.polySetPoints(this.poly, this.pointsString)
     this.getNodesWithinSelection()
