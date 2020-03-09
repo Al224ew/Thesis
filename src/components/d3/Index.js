@@ -25,7 +25,7 @@ export default class Index extends React.Component {
     }, 2000)
   }
 
-  // Bullshit code.. Remove and fix.
+  // Remove during refactoring, store inside a seperate component.
   print (e) {
     const string = []
     for (const [key, value] of Object.entries(e)) {
@@ -39,7 +39,7 @@ export default class Index extends React.Component {
     return (
       <div>
         <div style={{ width: '100vw', height: '100vh' }} ref={this.d3Ref} />
-        <div style={{textAlign: 'center', position: 'absolute', top: '0px', left: '40%', width:'10%', height: '3%', borderStyle:'solid', borderTopStyle:'none', borderRadius: '8px', borderWidth: '1px', backgroundColor: 'white'}}>
+        <div style={{ textAlign: 'center', position: 'absolute', top: '0px', left: '40%', width: '10%', height: '3%', borderStyle: 'solid', borderTopStyle: 'none', borderRadius: '8px', borderWidth: '1px', backgroundColor: 'white' }}>
           <p> Current mode: Panning</p>
         </div>
         {this.state.showAttributes &&

@@ -5,7 +5,9 @@ import EntitySelector from './tasks/EntitySelector'
 import MouseEvents from './events/MouseEvents'
 import AreaSelection from './tasks/AreaSelection'
 import MiscTasks from './tasks/MiscTasks'
-
+/**
+ * Used to iniate all tasks,
+ */
 export default class Tasks {
   constructor (node, links, ref, svg) {
     this.deselectionClicks = 0

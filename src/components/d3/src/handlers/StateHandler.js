@@ -30,6 +30,16 @@ const StateHandler = {
       states: [],
       currentState: 'default',
       defaultState: 'default'
+    },
+    nodeclick: {
+      states: [],
+      currentState: 'default',
+      defaultState: 'default'
+    },
+    edgeclick: {
+      states: [],
+      currentState: 'default',
+      defaultState: 'default'
     }
   },
   revertDefaultState (eventType) {
@@ -48,6 +58,9 @@ const StateHandler = {
   functionFromState (eventType) {
     const event = this.states[eventType.toLowerCase()]
     return typeof event.states[event.currentState] === 'undefined' ? () => NaN : event.states[event.currentState]
+  },
+  getCurrentState (eventType) {
+    return this.states[eventType.toLowerCase()].currentState
   }
 
 }

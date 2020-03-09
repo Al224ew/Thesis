@@ -1,39 +1,29 @@
 import SelectionDataHandler from '../component-task-connectors/SelectionDataHandler'
 import EntityStyler from '../stylers/EntityStyler'
-import KeyEvents from '../events/KeyEvents'
 import StateHandler from '../handlers/StateHandler'
 import OptionsConnector from '../component-task-connectors/OptionsConnector'
-import * as d3 from 'd3'
 const EntitySelector = {
   init (node, edge) {
     const pointer = () => { document.body.style.cursor = 'pointer' }
     const normal = () => { document.body.style.cursor = 'default' }
+    // Statehandler
+    StateHandler.addState('nodeClick', 'default', (node) => this.select('nodes', node))
+    StateHandler.addState('edgeClick', 'default', (edge) => this.select('edges', edge))
+    StateHandler.addState('nodeClick', 'multiSelect', (node) => this.multiSelect('nodes', node))
+    StateHandler.addState('edgeClick', 'multiSelect', (edge) => this.multiSelect('edges', edge))
+    StateHandler.addState('click', 'default', () => this.deselect())
+    // OptionsConnector
     OptionsConnector.addTask('Deselect all', () => this.deselectCurrentSelection(true))
     OptionsConnector.addTask('Previous selection', () => this.previousSelection())
     OptionsConnector.addTask('Multiselect mode', () => {
-      if (KeyEvents.getKey() === 17) {
-        KeyEvents.setKey(-1)
-      } else { KeyEvents.setKey(17) }
+      if (StateHandler.getCurrentState('nodeClick') === 'multiSelect') {
+        StateHandler.revertDefaultState('nodeClick')
+        StateHandler.revertDefaultState('edgeClick')
+      } else {
+        StateHandler.stateChange('nodeClick', 'multiSelect')
+        StateHandler.stateChange('edgeClick', 'multiSelect')
+      }
     })
-    KeyEvents.addFunctionToKeyPress(26, () => this.previousSelection())
-    const _this = this
-    node
-      .on('click', function () {
-        _this.select('nodes', d3.select(this))
-        d3.event.stopPropagation()
-      })
-      .on('mouseenter', pointer)
-      .on('mouseout', normal)
-
-    edge
-      .on('click', function () {
-        _this.select('edges', d3.select(this))
-        d3.event.stopPropagation()
-      })
-      .on('mouseenter', pointer)
-      .on('mouseout', normal)
-
-    StateHandler.addState('click', 'default', () => this.deselect())
   },
   /**
    * Resets the current selection, by normalizing the style of each current selection.
@@ -74,13 +64,10 @@ const EntitySelector = {
   previousSelection () {
     this.deselectCurrentSelection(false)
     const cSelection = SelectionDataHandler.revertSelection()
-    console.log(cSelection)
     if (typeof cSelection === 'undefined') {
-      console.log('returining')
       return
     }
     cSelection.nodes.forEach(node => {
-      console.log(node)
       EntityStyler.hightLight('nodes', node)
     })
     cSelection.edges.forEach(edge => {
@@ -89,18 +76,19 @@ const EntitySelector = {
   },
 
   /**
-   * Will push the node selected to the selection stack.
-   * If ctrl is pressed it's counted as multiple selection.
-   * @param {} node
+   * Used to select entitys and utilize the SelectionDataHandler to store the selection
+   * @param {} type - nodes or edges
+   * @param {} entity - the selection of the node/edge.
    */
   select (type, entity) {
-    if (KeyEvents.getKey() === 17) {
-      SelectionDataHandler.pushSelection(type, entity)
-    } else {
-      this.deselectCurrentSelection(false)
-      SelectionDataHandler.newSelection(type, entity)
-    }
-
+    console.log(type)
+    console.log(entity.data()[0].index)
+    this.deselectCurrentSelection(false)
+    SelectionDataHandler.newSelection(type, entity)
+    EntityStyler.hightLight(type, entity)
+  },
+  multiSelect (type, entity) {
+    SelectionDataHandler.pushSelection(type, entity)
     EntityStyler.hightLight(type, entity)
   }
 }

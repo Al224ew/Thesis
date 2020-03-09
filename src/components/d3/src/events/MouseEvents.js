@@ -26,6 +26,15 @@ const MouseEvents = {
       StateHandler.functionFromState('click')(d3.event)
       StateHandler.revertDefaultState('click')
     })
+    this.initD3MouseEvents()
+  },
+  initD3MouseEvents () {
+    d3.selectAll('circle').on('click', (e) => {
+      StateHandler.functionFromState('nodeClick')(d3.select(d3.event.target))
+    })
+    d3.selectAll('line').on('click', (e) => {
+      StateHandler.functionFromState('edgeClick')(d3.select(d3.event.target))
+    })
   }
 }
 export default MouseEvents

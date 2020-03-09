@@ -78,7 +78,6 @@ export default class Graph {
           data: link,
           selection: d3.select(this)
         })
-
       })
     DataHandler.newData = a
     // Put as seperate data, do same with links. Easy selection by id

@@ -54,6 +54,7 @@ const SelectionDataHandler = {
         this.currentSelection[type][currentItem.data()[0].index] = currentItem
       })
     } else {
+      console.log(this.currentSelection)
       this.currentSelection[type][item.data()[0].index] = item
     }
     this.setCurrentSelection()

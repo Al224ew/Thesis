@@ -4,12 +4,21 @@ import EntityStyler from '../stylers/EntityStyler'
 import DataHandler from '../../../Data/DataHandler'
 import SelectionDataHandler from '../component-task-connectors/SelectionDataHandler'
 import OptionsConnector from '../component-task-connectors/OptionsConnector'
-import KeyEvents from '../events/KeyEvents'
+/**
+ * Area selection.
+ * Used to select an area of nodes and links.
+ * Will create an SVG element of type PolyLine in order to visualize the selection process.
+ */
 const AreaSelection = {
   selectedPoints: [],
   pointsString: '',
   svg: null,
   gSelect: null,
+  /**
+   * Initializes every variable and states inside the statehandler and tasks inside the optionsConnector.
+   * gSelect is used to find x,y values from the mouse movements.
+   * @param {*} svg - The svg element which the graph is rendered upon. 
+   */
   init (svg) {
     this.svg = svg
     this.gSelect = d3.selectAll(svg)._groups[0]._groups[0][0]
@@ -23,12 +32,6 @@ const AreaSelection = {
       .style('fill', 'blue')
       .style('opacity', '0.2')
 
-    KeyEvents.addFunctionToKeyPress(28, () => {
-      document.body.style.cursor = 'crosshair'
-      this.selectedPoints = []
-      StateHandler.stateChange('mousemove', 'areaSelection')
-      StateHandler.stateChange('mouseup', 'areaSelection')
-    })
     OptionsConnector.addTask('Area Selection', () => {
       document.body.style.cursor = 'crosshair'
       this.selectedPoints = []
@@ -51,6 +54,9 @@ const AreaSelection = {
     EntityStyler.polySetPoints(this.poly, this.pointsString)
     this.getNodesWithinSelection()
   },
+  /**
+   * Iterates the selection to find which nodes are inside the selection.
+   */
   getNodesWithinSelection () {
     const cordinates = { minX: NaN, minY: NaN, maxX: NaN, maxY: NaN }
 
@@ -75,6 +81,11 @@ const AreaSelection = {
     SelectionDataHandler.newSelection('nodes', nodes)
     SelectionDataHandler.pushSelection('edges', edges)
   },
+  /**
+   * Checks what entitys that are inside the max/min.
+   * @param {} type - either nodes or egdes,
+   * @param {*} cordinates - the max and min coordinates.
+   */
   getEntitysWithinMaxMin (type, cordinates) {
     const entitysWithinSelection = []
     DataHandler.data[type].forEach(entity => {
@@ -91,6 +102,10 @@ const AreaSelection = {
     })
     return entitysWithinSelection
   },
+  /**
+   * Controlling what entitys to select within the selection.
+   * @param {*} entitysWithinSelection - Entitys that are withtin the selections max/min points.
+   */
   getEntitysToSelect (entitysWithinSelection) {
     const selectedEntitys = []
     entitysWithinSelection.forEach(entity => {
@@ -114,7 +129,6 @@ const AreaSelection = {
       EntityStyler.normalize('nodes', node)
     })
     SelectionDataHandler.currentSelection.edges.forEach(edge => {
-      console.log(edge)
       EntityStyler.normalize('edges', edge)
     })
   },
