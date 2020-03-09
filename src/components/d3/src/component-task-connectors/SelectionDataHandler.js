@@ -26,7 +26,6 @@ const SelectionDataHandler = {
         edges: []
       }
     }
-    console.log(this.currentSelection)
     this.setCurrentSelection()
     return this.currentSelection
   },
@@ -40,8 +39,6 @@ const SelectionDataHandler = {
     } else {
       this.currentSelection[type][item.data()[0].index] = item
     }
-    console.log(item.data()[0].index)
-    console.log(item.data()[0])
     this.setCurrentSelection()
   },
 

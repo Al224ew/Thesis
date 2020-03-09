@@ -7,7 +7,7 @@ import FilterConnector from '../component-task-connectors/FilterConnector'
 import DataHandler from '../../../Data/DataHandler'
 const MiscTasks = {
   init () {
-    OptionsConnector.addTask('Find adjacent nodes', () => this.adjacent())
+    OptionsConnector.addTask('Find adjacent nodes', () => this.findAdjacents())
     KeyEvents.addFunctionToKeyPress(10, () => this.findAdjacents())
     OptionsConnector.addTask('Filter', () => FilterConnector.show())
     KeyEvents.addFunctionToKeyPress(25, () => this.filter('nodes', 'age', '>', 10))
@@ -15,34 +15,9 @@ const MiscTasks = {
 
   findAdjacents () {
     const nodes = []
-    d3.selectAll('line')
-      .filter(function (link) {
-        SelectionDataHandler.getCurrentSelection('nodes').forEach(entity => {
-          entity = entity.data()[0]
-          if (link.target.id === entity.id || link.source.id === entity.id) {
-            EntityStyler.hightLight('edges', d3.select(this))
-            SelectionDataHandler.pushSelection('edges', d3.select(this))
-            nodes[entity.id === link.target.id ? link.source.id : link.target.id] = true
-          }
-        })
-      })
-    d3.selectAll('circle')
-      .filter(function (node) {
-        nodes.forEach((fNode, index) => {
-          if (node.id === index) {
-            EntityStyler.hightLight('nodes', d3.select(this))
-            SelectionDataHandler.pushSelection('nodes', d3.select(this))
-          }
-        })
-      })
-  },
-
-  adjacent() {
-    let nodes = []
     SelectionDataHandler.getCurrentSelection('nodes').forEach(entiy => {
       entiy = entiy.data()[0]
       DataHandler.newData[entiy.id].edges.forEach(edge => {
-        console.log(edge)
         EntityStyler.hightLight('edges', edge.selection)
         SelectionDataHandler.pushSelection('edges', edge.selection)
         nodes.push(DataHandler.newData[edge.data.source.id === entiy.id ? edge.data.target.id : edge.data.source.id].selection)
@@ -50,7 +25,7 @@ const MiscTasks = {
     })
     nodes.forEach(node => {
       EntityStyler.hightLight('nodes', node)
-      SelectionDataHandler.pushSelection(node)
+      SelectionDataHandler.pushSelection('nodes', node)
     })
   },
 

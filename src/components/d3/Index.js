@@ -39,6 +39,9 @@ export default class Index extends React.Component {
     return (
       <div>
         <div style={{ width: '100vw', height: '100vh' }} ref={this.d3Ref} />
+        <div style={{textAlign: 'center', position: 'absolute', top: '0px', left: '40%', width:'10%', height: '3%', borderStyle:'solid', borderTopStyle:'none', borderRadius: '8px', borderWidth: '1px', backgroundColor: 'white'}}>
+          <p> Current mode: Panning</p>
+        </div>
         {this.state.showAttributes &&
           <div style={{ backgroundColor: 'white', borderRadius: 2, borderStyle: 'solid', borderWidth: 0.5, borderColor: 'black', height: '100vh', position: 'absolute', top: '0px', left: '0px', width: '20vw' }}>
             <Tabs defaultActiveKey='home' id='uncontrolled-tab-example'>
