@@ -1,9 +1,10 @@
 import * as d3 from 'd3'
-import StateHandler from './helper/StateHandler'
-import EntityStyler from './helper/EntityStyler'
+import StateHandler from '../handlers/StateHandler'
+import EntityStyler from '../stylers/EntityStyler'
 import DataHandler from '../../../Data/DataHandler'
-import SelectionDataHandler from '../Util/SelectionDataHandler'
-import KeyEvents from './helper/KeyEvents'
+import SelectionDataHandler from '../component-task-connectors/SelectionDataHandler'
+import OptionsConnector from '../component-task-connectors/OptionsConnector'
+import KeyEvents from '../events/KeyEvents'
 const AreaSelection = {
   selectedPoints: [],
   pointsString: '',
@@ -23,6 +24,12 @@ const AreaSelection = {
       .style('opacity', '0.2')
 
     KeyEvents.addFunctionToKeyPress(28, () => {
+      document.body.style.cursor = 'crosshair'
+      this.selectedPoints = []
+      StateHandler.stateChange('mousemove', 'areaSelection')
+      StateHandler.stateChange('mouseup', 'areaSelection')
+    })
+    OptionsConnector.addTask('Area Selection', () => {
       document.body.style.cursor = 'crosshair'
       this.selectedPoints = []
       StateHandler.stateChange('mousemove', 'areaSelection')

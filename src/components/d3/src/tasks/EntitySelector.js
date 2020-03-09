@@ -1,13 +1,20 @@
-import SelectionDataHandler from '../Util/SelectionDataHandler'
-import EntityStyler from './helper/EntityStyler'
-import KeyEvents from './helper/KeyEvents'
-import StateHandler from './helper/StateHandler'
+import SelectionDataHandler from '../component-task-connectors/SelectionDataHandler'
+import EntityStyler from '../stylers/EntityStyler'
+import KeyEvents from '../events/KeyEvents'
+import StateHandler from '../handlers/StateHandler'
+import OptionsConnector from '../component-task-connectors/OptionsConnector'
 import * as d3 from 'd3'
 const EntitySelector = {
   init (node, edge) {
     const pointer = () => { document.body.style.cursor = 'pointer' }
     const normal = () => { document.body.style.cursor = 'default' }
-
+    OptionsConnector.addTask('Deselect all', () => this.deselectCurrentSelection(true))
+    OptionsConnector.addTask('Previous selection', () => this.previousSelection())
+    OptionsConnector.addTask('Multiselect mode', () => {
+      if (KeyEvents.getKey() === 17) {
+        KeyEvents.setKey(-1)
+      } else { KeyEvents.setKey(17) }
+    })
     KeyEvents.addFunctionToKeyPress(26, () => this.previousSelection())
     const _this = this
     node
@@ -90,7 +97,6 @@ const EntitySelector = {
     if (KeyEvents.getKey() === 17) {
       SelectionDataHandler.pushSelection(type, entity)
     } else {
-      console.log('here')
       this.deselectCurrentSelection(false)
       SelectionDataHandler.newSelection(type, entity)
     }

@@ -19,10 +19,8 @@ const SelectionDataHandler = {
   },
 
   revertSelection () {
-    console.log('reverthing.')
     this.currentSelection = this.previousSelection.pop()
     if (typeof this.currentSelection === 'undefined') {
-      console.log('undefined')
       this.currentSelection = {
         nodes: [],
         edges: []
@@ -42,6 +40,8 @@ const SelectionDataHandler = {
     } else {
       this.currentSelection[type][item.data()[0].index] = item
     }
+    console.log(item.data()[0].index)
+    console.log(item.data()[0])
     this.setCurrentSelection()
   },
 

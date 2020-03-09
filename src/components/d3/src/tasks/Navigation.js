@@ -1,5 +1,5 @@
 
-import StateHandler from './helper/StateHandler'
+import StateHandler from '../handlers/StateHandler'
 const Navigation = {
   /// Variable area
   currentZoom: 1,

@@ -1,10 +1,11 @@
 import React from 'react'
 import dataHandler from '../Data/DataHandler'
 import Graph from './src/Graph'
-import SelectionDataHandler from './src/Util/SelectionDataHandler'
+import SelectionDataHandler from './src/component-task-connectors/SelectionDataHandler'
 import OptionsMenu from './src/react_components/OptionsMenu'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
+import FilterMenu from './src/react_components/FilterMenu'
 export default class Index extends React.Component {
   constructor (props) {
     super(props)
@@ -55,7 +56,7 @@ export default class Index extends React.Component {
             </Tabs>
 
           </div>}
-
+        <FilterMenu />
         <OptionsMenu />
       </div>
     )

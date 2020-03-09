@@ -1,13 +1,15 @@
 import React from 'react'
-import ListGroup from 'react-bootstrap/ListGroup'
-import StateHandler from '../tasks/helper/StateHandler'
+import Dropdown from 'react-bootstrap/Dropdown'
+import StateHandler from '../handlers/StateHandler'
+import OptionsConnector from '../component-task-connectors/OptionsConnector'
 export default class OptionsMenu extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       show: false,
       top: '0px',
-      left: '0px'
+      left: '0px',
+      options: []
     }
   }
 
@@ -25,16 +27,24 @@ export default class OptionsMenu extends React.Component {
       top: d3Event.clientY,
       left: d3Event.clientX
     }))
+
+    OptionsConnector.setUpdateStateFunc((data) => this.setState({ options: data }))
+  }
+
+  onClickHandler (option) {
+    option.func()
+    this.setState({ show: false })
   }
 
   render () {
     return (
       <div style={{ position: 'absolute', top: '0px', left: '0px' }}>
         {this.state.show &&
-          <ListGroup style={{ position: 'absolute', left: this.state.left, top: this.state.top }}>
-            <ListGroup.Item><b>Toggle AreaSelection (ctrl+s)</b></ListGroup.Item>
-            <ListGroup.Item>Find adjacent nodes (ctrl+n)</ListGroup.Item>
-          </ListGroup>}
+          <Dropdown style={{ backgroundColor: '#F2F3F4', position: 'absolute', left: this.state.left, top: this.state.top }}>
+            {this.state.options.map((option, index) => {
+              return <Dropdown.Item key={index} onClick={() => this.onClickHandler(option)}> {option.name} </Dropdown.Item>
+            })}
+          </Dropdown>}
       </div>
     )
   }

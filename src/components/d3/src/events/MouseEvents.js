@@ -1,6 +1,6 @@
 // Every mouseEvent will be sent a d3 event.
 import * as d3 from 'd3'
-import StateHandler from './StateHandler'
+import StateHandler from '../handlers/StateHandler'
 
 const MouseEvents = {
   initEvents (ref) {
@@ -19,7 +19,6 @@ const MouseEvents = {
     })
     // Showing only the menu options.
     firstChild.on('contextmenu', () => {
-      console.log('hello')
       StateHandler.functionFromState('contextmenu')(d3.event)
       d3.event.preventDefault()
     })

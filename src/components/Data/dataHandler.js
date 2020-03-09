@@ -1,6 +1,8 @@
 const DataHandler = {
   data: {
   },
+  newData: {
+  },
   generate (nodes) {
     const data = { nodes: [], links: [], adjaceny: [] }
     for (let i = 0; i <= nodes; i++) {

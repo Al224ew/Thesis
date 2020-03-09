@@ -59,7 +59,28 @@ export default class Graph {
       .text(function (d) {
         return d.id
       })
+    const a = []
+    d3.selectAll('circle')
+      .filter(function (node) {
+        a[node.id] = {
+          data: node,
+          selection: d3.select(this),
+          edges: []
+        }
+      })
+    d3.selectAll('line')
+      .filter(function (link) {
+        a[link.source].edges.push({
+          data: link,
+          selection: d3.select(this)
+        })
+        a[link.target].edges.push({
+          data: link,
+          selection: d3.select(this)
+        })
 
+      })
+    DataHandler.newData = a
     // Put as seperate data, do same with links. Easy selection by id
     this.tasks = new Tasks(this.node, this.link, this.ref, svg)
   }
